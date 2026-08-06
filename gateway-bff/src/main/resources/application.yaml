@@ -27,6 +27,7 @@ spring:
               predicates:
                 - Path=/api/**
               filters:
+                - TokenRelay=
                 - RewritePath=/api/(?<segment>.*), /api/$\{segment}
             - id: elearning-app
               uri: http://localhost:3001

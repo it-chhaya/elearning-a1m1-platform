@@ -15,7 +15,9 @@ public class SecurityConfig {
     public SecurityWebFilterChain bffFilterChain(ServerHttpSecurity http) {
 
         http.authorizeExchange(
-                endpoints -> endpoints.anyExchange().authenticated()
+                endpoints -> endpoints.
+                        anyExchange()
+                        .authenticated()
         );
 
         http.httpBasic(ServerHttpSecurity.HttpBasicSpec::disable);

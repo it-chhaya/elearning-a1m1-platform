@@ -1,0 +1,80 @@
+networks:
+  m1-net:
+volumes:
+  postgres-m1-vol:
+  keycloak-m1-vol:
+services:
+  elearning-m1:
+    image: elearning-m1:latest
+    build:
+      context: . # route to Dockerfile
+    container_name: elearning-m1
+    ports:
+      - "8888:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=${POSTGRES_JDBC_URL}
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWKSETURI=http://keycloak-m1:8080/realms/elearning/protocol/openid-connect/certs
+    networks:
+      - m1-net
+    depends_on:
+      - postgres-m1
+
+  postgres-m1:
+    image: postgres:18.4
+    container_name: postgres-m1
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USER}
+    volumes:
+      - "postgres-m1-vol:/var/lib/postgresql/18/docker"
+      - "./init-scripts:/docker-entrypoint-initdb.d"
+    networks:
+      - m1-net
+    restart: unless-stopped
+
+  keycloak-m1:
+    image: quay.io/keycloak/keycloak:26.6.4
+    container_name: keycloak-m1
+    environment:
+      # Database Configuration
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres-m1:5432/keycloak_db
+      KC_DB_USERNAME: ${POSTGRES_USER}
+      KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
+
+      # Admin User
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+
+      # Production Settings
+      KC_HOSTNAME: ${KC_HOSTNAME}
+      KC_HOSTNAME_PORT: ${KC_HOSTNAME_PORT}
+      KC_HOSTNAME_STRICT: false               # set to true if HTTPS
+      KC_HOSTNAME_STRICT_HTTPS: false         # set to true if HTTPS
+      KC_HOSTNAME_URL: ${KC_HOSTNAME_URL}
+      KC_HOSTNAME_ADMIN_URL: ${KC_HOSTNAME_URL}
+      KC_PROXY: edge
+      KC_HTTP_ENABLED: true
+      #KC_HTTPS_PORT: 443
+      KC_PROXY_HEADERS: xforwarded
+      KC_CACHE: ispn
+      KC_LOG_LEVEL: INFO
+      KC_METRICS_ENABLED: true
+      KC_HEALTH_ENABLED: true
+      JAVA_OPTS_APPEND: "-Xms512m -Xmx2048m"
+    command: start               # use in production mode
+    #command: start-dev                        # use in development mode
+    ports:
+      - "${KC_HOSTNAME_PORT}:8080"
+    volumes:
+      - keycloak-m1-vol:/opt/keycloak/data
+      - ./keycloak/themes:/opt/keycloak/themes
+      - ./keycloak/conf:/opt/keycloak/conf
+    networks:
+      - m1-net
+    depends_on:
+      - postgres-m1
+    restart: unless-stopped
+

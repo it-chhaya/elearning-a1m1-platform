@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/elearning-a1m1.iml" filepath="$PROJECT_DIR$/.idea/elearning-a1m1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/elearning-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/elearning-service.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/elearning-service.test.iml" filepath="$PROJECT_DIR$/.idea/modules/elearning-service.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/gateway-bff.main.iml" filepath="$PROJECT_DIR$/.idea/modules/gateway-bff.main.iml" />
+    </modules>
+  </component>
+</project>

@@ -1,0 +1,36 @@
+spring:
+  profiles:
+    active:
+      - default
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8889/realms/elearning
+          jwk-set-uri: http://localhost:8889/realms/elearning/protocol/openid-connect/certs
+  jpa:
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: jdbc:postgresql://localhost:8432/elearning_db
+    driver-class-name: org.postgresql.Driver
+    username: m1usr
+    password: qwerqwer
+  application:
+    name: elearning-a01-m1
+server:
+  port: 8888
+keycloak:
+  server-url: http://localhost:8889
+  client-id: spring-boot-elearning
+  client-secret: Swf1heYpE03N3XeuJJvaJWTpO2b9Zaqp
+  realm: master
+  target-realm: elearning
+---
+spring:
+  config:
+    activate:
+      on-profile:
+        - docker
+server:
+  port: 8080

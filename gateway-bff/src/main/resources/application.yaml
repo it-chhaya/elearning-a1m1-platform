@@ -14,7 +14,6 @@ spring:
               - openid
               - profile
               - email
-              #- roles
   application:
     name: gateway-bff
   cloud:
@@ -30,7 +29,7 @@ spring:
                 - TokenRelay=
                 - RewritePath=/api/(?<segment>.*), /api/$\{segment}
             - id: elearning-app
-              uri: http://localhost:3001
+              uri: http://localhost:3000
               predicates:
                 - Path=/**
 

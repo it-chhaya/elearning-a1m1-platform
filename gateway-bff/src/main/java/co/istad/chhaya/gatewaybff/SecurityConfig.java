@@ -15,9 +15,10 @@ public class SecurityConfig {
     public SecurityWebFilterChain bffFilterChain(ServerHttpSecurity http) {
 
         http.authorizeExchange(
-                endpoints -> endpoints.
-                        anyExchange()
-                        .authenticated()
+                endpoints -> endpoints
+                        .pathMatchers("/profile").authenticated()
+                        .pathMatchers("/dashboard/**").hasAnyRole("ADMIN", "INSTRUCTOR")
+                        .anyExchange().permitAll()
         );
 
         http.httpBasic(ServerHttpSecurity.HttpBasicSpec::disable);

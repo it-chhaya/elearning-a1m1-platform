@@ -1,4 +1,29 @@
+"use client"
+
+import Link from "next/link";
+import {useEffect, useState} from "react";
+
+type AuthenticatedResponse = {
+    isAuthenticated: boolean,
+    username: string
+}
+
 export default function Header() {
+
+    const [authenticated, setAuthenticated] = useState<AuthenticatedResponse>()
+
+    useEffect(() => {
+        function checkAuthentication() {
+            fetch("/api/v1/auth/secured")
+                .then(res => res.json())
+                .then(json => {
+                    console.log("Check Auth:", json)
+                    setAuthenticated(json)
+                })
+        }
+        checkAuthentication()
+    }, [setAuthenticated])
+
     return (
         <header className="bg-white">
             <div className="mx-auto flex h-16 max-w-7xl items-center gap-8 px-4 sm:px-6 lg:px-8">
@@ -48,21 +73,28 @@ export default function Header() {
                     </nav>
 
                     <div className="flex items-center gap-4">
-                        <div className="sm:flex sm:gap-4">
-                            <a
-                                className="block rounded-md bg-teal-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-teal-700"
-                                href="#"
-                            >
-                                Login
-                            </a>
 
-                            <a
-                                className="hidden rounded-md bg-gray-100 px-5 py-2.5 text-sm font-medium text-teal-600 transition hover:text-teal-600/75 sm:block"
-                                href="#"
-                            >
-                                Register
-                            </a>
-                        </div>
+                        {
+                            authenticated && authenticated.isAuthenticated ? (
+                             <p>{authenticated.username}</p>
+                            ) : (
+                                <div className="sm:flex sm:gap-4">
+                                    <Link
+                                        className="block rounded-md bg-teal-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-teal-700"
+                                        href="/oauth2/authorization/keycloak"
+                                    >
+                                        Login
+                                    </Link>
+
+                                    <a
+                                        className="hidden rounded-md bg-gray-100 px-5 py-2.5 text-sm font-medium text-teal-600 transition hover:text-teal-600/75 sm:block"
+                                        href="#"
+                                    >
+                                        Register
+                                    </a>
+                                </div>
+                            )
+                        }
 
                         <button
                             className="block rounded-sm bg-gray-100 p-2.5 text-gray-600 transition hover:text-gray-600/75 md:hidden"

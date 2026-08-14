@@ -76,7 +76,15 @@ export default function Header() {
 
                         {
                             authenticated && authenticated.isAuthenticated ? (
-                             <p>{authenticated.username}</p>
+                             <>
+                                 <p>{authenticated.username}</p>
+                                 <Link
+                                     className="block rounded-md bg-amber-800 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-teal-700"
+                                     href="/logout"
+                                 >
+                                     Log out
+                                 </Link>
+                             </>
                             ) : (
                                 <div className="sm:flex sm:gap-4">
                                     <Link

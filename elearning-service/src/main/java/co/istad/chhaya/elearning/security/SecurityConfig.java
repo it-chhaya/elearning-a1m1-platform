@@ -34,11 +34,11 @@ public class SecurityConfig {
                         "/swagger-ui/**",
                         "/swagger-ui.html").permitAll()
                 .requestMatchers(HttpMethod.GET,
-                        //"/api/v1/categories/**",
+                        "/api/v1/categories/**",
                         "/api/v1/courses/**"
                 ).permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/v1/auth/register").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/v1/courses/**").hasAnyRole("INSTRUCTOR", "ADMIN")
+                .requestMatchers(HttpMethod.POST, "/api/v1/courses/**").hasAllAuthorities("INSTRUCTOR", "course:write")
                 .anyRequest().authenticated()
         );
 
@@ -58,7 +58,7 @@ public class SecurityConfig {
             Map<String, Collection<String>> realmAccess = jwt.getClaim("realm_access");
             Collection<String> roles = realmAccess.get("roles");
             return roles.stream()
-                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                    .map(SimpleGrantedAuthority::new)
                     .collect(Collectors.toList());
         };
 
